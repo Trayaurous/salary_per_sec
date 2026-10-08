@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#eeece5" />
+    <meta name="description" content="一台安静的秒薪计数器。计算每日收入，也可以从零计时。" />
+    <title>秒薪计算器</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="icon-settings" viewBox="0 0 24 24"><path d="m9.4 3-.6 2.4-2 .9-2.2-.6L2.2 10l1.7 1.8v2.3l-1.7 1.8 2.4 4.2 2.3-.6 2 .9.5 2.4h5l.6-2.4 2-.9 2.2.6 2.4-4.2-1.7-1.8v-2.3l1.7-1.8-2.4-4.2-2.3.6-2-.9L14.5 3z" transform="translate(0 -1) scale(1 .96)"/><circle cx="12" cy="12" r="3.1"/></symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z"/></symbol>
+      <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+      <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M5.2 8A8 8 0 1 1 4 13M5 3v5h5"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    </svg>
+
+    <button id="settings-button" class="settings-button tactile" type="button" aria-label="打开设置" title="设置">
+      <svg class="icon"><use href="#icon-settings"/></svg>
+    </button>
+
+    <main class="desk">
+      <section class="device" aria-label="秒薪计算器">
+        <i class="screw screw-tl" aria-hidden="true"></i><i class="screw screw-tr" aria-hidden="true"></i>
+        <div class="counter-bezel">
+          <span class="currency" aria-hidden="true">¥</span>
+          <div id="amount-display" class="amount-display" role="img" aria-label="尚未配置"></div>
+        </div>
+        <div class="device-lower">
+          <div class="screen-bezel">
+            <div id="screen" class="screen" aria-live="off">
+              <span id="status-text" class="status-text"></span>
+              <div id="setup-guide" class="setup-guide" aria-hidden="true">
+                <svg class="icon"><use href="#icon-settings"/></svg>
+                <span class="guide-trail"></span>
+                <svg class="icon guide-arrow"><use href="#icon-arrow"/></svg>
+              </div>
+              <div id="elapsed-display" class="elapsed-display" role="img" aria-label="经过时间" hidden></div>
+              <span id="screen-indicator" class="screen-indicator" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="device-controls">
+            <div class="mode-switch" role="group" aria-label="计数模式">
+              <span class="mode-thumb" aria-hidden="true"></span>
+              <button id="daily-mode" type="button" aria-pressed="true">今日</button>
+              <button id="timer-mode" type="button" aria-pressed="false">计时</button>
+            </div>
+            <div class="transport">
+              <button id="toggle-timer" class="transport-button play-button tactile" type="button" aria-label="开始计时" title="开始计时" disabled>
+                <svg class="icon"><use id="timer-icon" href="#icon-play"/></svg>
+              </button>
+              <button id="reset-timer" class="transport-button reset-button tactile" type="button" aria-label="归零计时器" title="归零" disabled>
+                <svg class="icon"><use href="#icon-reset"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <i class="screw screw-bl" aria-hidden="true"></i><i class="screw screw-br" aria-hidden="true"></i>
+        <span class="device-foot foot-left" aria-hidden="true"></span><span class="device-foot foot-right" aria-hidden="true"></span>
+      </section>
+    </main>
+
+    <dialog id="settings-dialog" aria-labelledby="settings-heading">
+      <form id="settings-form" novalidate>
+        <div class="dialog-heading">
+          <div><p class="eyebrow">每一秒都算数</p><h1 id="settings-heading">秒薪计算器</h1></div>
+          <button id="close-settings" class="close-button" type="button" aria-label="关闭设置"><svg class="icon"><use href="#icon-close"/></svg></button>
+        </div>
+        <div class="field salary-field">
+          <label for="salary">月薪</label>
+          <div class="salary-input"><span aria-hidden="true">¥</span><input id="salary" name="salary" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="输入你的月薪" required autocomplete="off" aria-describedby="salary-error"/><span>元 / 月</span></div>
+          <p id="salary-error" class="field-error"></p>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label for="work-start">上班时间</label><input id="work-start" name="workStart" type="time" step="60" required aria-describedby="workStart-error"/><p id="workStart-error" class="field-error"></p></div>
+          <div class="field"><label for="work-end">下班时间</label><input id="work-end" name="workEnd" type="time" step="60" required aria-describedby="workEnd-error"/><p id="workEnd-error" class="field-error"></p></div>
+        </div>
+        <div class="lunch-heading"><span>午休</span><span>选填 · 留空即无午休</span><button id="clear-lunch" type="button">清空</button></div>
+        <div class="field-grid lunch-fields">
+          <div class="field"><label class="sr-only" for="lunch-start">午休开始</label><input id="lunch-start" name="lunchStart" type="time" step="60" aria-describedby="lunchStart-error"/><p id="lunchStart-error" class="field-error"></p></div>
+          <div class="field"><label class="sr-only" for="lunch-end">午休结束</label><input id="lunch-end" name="lunchEnd" type="time" step="60" aria-describedby="lunchEnd-error"/><p id="lunchEnd-error" class="field-error"></p></div>
+        </div>
+        <label class="rest-option" for="single-rest"><span><strong>每周单休</strong><small>周一至周六工作，周日休息</small></span><input id="single-rest" name="singleRest" type="checkbox" role="switch"/><span class="switch-track" aria-hidden="true"></span></label>
+        <div class="calculation" aria-label="薪资计算结果">
+          <div class="calculation-heading"><span id="month-label">本月</span><span>东八区</span></div>
+          <dl><div><dt>工作日</dt><dd id="preview-days">—</dd></div><div><dt>每日工时</dt><dd id="preview-hours">—</dd></div><div><dt>日均薪资</dt><dd id="preview-daily">—</dd></div><div><dt>时薪</dt><dd id="preview-hourly">—</dd></div></dl>
+          <div class="rate-line"><span>每一秒</span><strong id="preview-rate">—</strong><span>元</span></div>
+        </div>
+        <p id="storage-note" class="storage-note">设置仅保存在此浏览器</p>
+        <button class="save-button tactile" type="submit"><span>保存设置</span><svg class="icon"><use href="#icon-check"/></svg></button>
+      </form>
+    </dialog>
+    <noscript>请启用 JavaScript 使用秒薪计算器。</noscript>
+  </body>
+</html>
